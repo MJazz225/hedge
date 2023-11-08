@@ -1,0 +1,43 @@
+import pandas as pd
+from datetime import datetime, date, time
+
+data_file = "2022-11-16-08-00.csv"
+d = data_file[:10]
+y,m,d = d.split('-')
+
+dates = date(int(y), int(m), int(d))
+t = data_file[11:-4]
+h, m = t.split("-")
+times = time(int(h), int(m))
+
+date_time = datetime.combine(dates, times)
+# dates = str(a) + " " + data_file[11:-4] + ":00:00"
+print(date_time)
+def update(cell):
+    cell = date_time
+    return cell
+
+def rename_product(cell):
+    a, b = cell.split('USD')
+    cell = a
+    return cell
+
+
+
+df = pd.read_csv(data_file,converters={"序號" : update, "產品" : rename_product}, na_values= {
+    "買入均價" : 0, 
+    "賣出均價" : 0,
+})
+
+        
+df = df.rename(columns= {"序號" : "日期"})
+
+df = df.drop(["公司貨幣","持倉總量"], axis=1)
+
+# df = df.groupby('產品')
+
+# df = df.sum()
+
+# df = pd(converters= {"買入均價" : }) 
+# print(df)
+df.to_csv("C_{}".format(data_file),index=False, encoding="utf_8_sig")
